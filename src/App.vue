@@ -1,13 +1,16 @@
 <template>
   <div id="app">
-    Testing
+    <CatCarouselDemo />
   </div>
 </template>
 
 <script>
-
+import CatCarouselDemo from '@/demo/CatCarouselDemo'
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    CatCarouselDemo
+  }
 }
 </script>
 
