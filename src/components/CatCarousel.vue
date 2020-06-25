@@ -122,13 +122,22 @@
     },
     mounted () {
       this.maxSlide = Math.ceil(this.items.length / this.itemPerPage)
-      this.itemWidth = this.carouselItem.length > 0 && this.carouselItem[0].clientWidth
+      this.itemWidth = this.carouselItem &&
+        this.carouselItem.length > 0 &&
+        this.carouselItem[0].clientWidth
       this.initSlides()
     },
     watch: {
       items () {
+        this.wrapper = {
+          translateX: 0
+        }
+        this.track = 0
         this.maxSlide = Math.ceil(this.items.length / this.itemPerPage)
-        this.itemWidth = this.carouselItem.length > 0 && this.carouselItem[0].clientWidth
+        this.itemWidth = this.carouselItem &&
+          this.carouselItem.length > 0 &&
+          this.carouselItem[0].clientWidth
+        this.initSlides()
       }
     },
     computed: {
@@ -136,7 +145,7 @@
         return this.$refs.carouselContent
       },
       carouselItem () {
-        return this.$refs.carouselItem
+        return this.$refs.carouselItem || []
       },
       carouselWrapper () {
         return this.$refs.carouselWrapper
