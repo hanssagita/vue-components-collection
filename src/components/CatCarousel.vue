@@ -108,7 +108,6 @@
     },
     data () {
       return {
-        itemWidth: 0,
         wrapper: {
           translateX: 0
         },
@@ -122,9 +121,6 @@
     },
     mounted () {
       this.maxSlide = Math.ceil(this.items.length / this.itemPerPage)
-      this.itemWidth = this.carouselItem &&
-        this.carouselItem.length > 0 &&
-        this.carouselItem[0].clientWidth
       this.initSlides()
     },
     watch: {
@@ -134,9 +130,6 @@
         }
         this.track = 0
         this.maxSlide = Math.ceil(this.items.length / this.itemPerPage)
-        this.itemWidth = this.carouselItem &&
-          this.carouselItem.length > 0 &&
-          this.carouselItem[0].clientWidth
         this.initSlides()
       }
     },
@@ -149,6 +142,9 @@
       },
       carouselWrapper () {
         return this.$refs.carouselWrapper
+      },
+      itemWidth () {
+        return this.carouselItem && this.carouselItem.length > 0 && this.carouselItem[0].clientWidth
       },
       wrapperStyles () {
         if (this.centerMode.enabled) {
