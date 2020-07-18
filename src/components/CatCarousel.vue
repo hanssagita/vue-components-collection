@@ -7,7 +7,7 @@
         <template>
           <slot name="prev-navigation" :prev="prev">
             <div class="cat-carousel__default-nav cat-carousel__default-nav--left" @click="prev">
-              <img src="https://i.imgur.com/PpHTPrc.png">
+              <img src="@/assets/images/arrow.png">
             </div>
           </slot>
         </template>
@@ -47,7 +47,7 @@
         <template>
           <slot name="next-navigation" :next="next">
             <div class="cat-carousel__default-nav" @click="next">
-              <img src="https://i.imgur.com/PpHTPrc.png">
+              <img src="@/assets/images/arrow.png">
             </div>
           </slot>
         </template>
