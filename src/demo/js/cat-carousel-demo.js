@@ -6,7 +6,7 @@ export default {
   },
   data() {
     return {
-      itemPerPage: 5,
+      itemPerPage: 1,
       products: [
         {
           "id": "ps--SUS-34874-12213",
