@@ -59,6 +59,7 @@
     >
       <div
         v-for="index in maxSlide"
+        v-show="validateIndicator(index)"
         :key="index"
         :class="['cat-carousel__indicators__item']"
         :style="[indicatorsItemSizeStyle, selectedIndicator(index) && activeIndicatorStyle]"
@@ -78,7 +79,8 @@
     size: 16,
     color: '#d6d6d6',
     activeColor: '#0095da',
-    hideIndicators: false
+    hideIndicators: false,
+    maxIndicator: 5
   }
 
   export default {
@@ -113,6 +115,8 @@
         },
         maxSlide: 0,
         track: 0,
+        trackEnd: 0,
+        trackStart: 0,
         slides: [],
         normalSlideWindow: [],
         reversedSlideWindow: [],
@@ -131,6 +135,15 @@
         this.track = 0
         this.maxSlide = Math.ceil(this.items.length / this.itemPerPage)
         this.initSlides()
+      },
+      track(val) {
+        if (val === this.trackStart - 1) {
+          this.trackStart--
+          this.trackEnd++
+        } else if (val === this.items.length - this.trackEnd) {
+          this.trackStart++
+          this.trackEnd--
+        }
       }
     },
     computed: {
@@ -186,13 +199,23 @@
       },
       hideIndicators () {
         return this.indicatorsConfig.hideIndicators || INDICATORS_DEFAULT_CONFIG.hideIndicators
+      },
+      maxIndicator () {
+        return this.indicatorsConfig.maxIndicator - 1 || INDICATORS_DEFAULT_CONFIG.maxIndicator - 1
       }
     },
     methods: {
       initSlides () {
+        this.trackEnd = this.items.length - this.maxIndicator
         this.slides = this.addSlides(this.items.length)
         this.initialSlides = this.slides
         this.reversedSlides = this.slides.slice().reverse()
+      },
+      validateIndicator(index) {
+        if (index >= this.trackStart && index <= this.items.length - this.trackEnd + 1) {
+          return true
+        }
+        return false
       },
       addSlides (itemsLength) {
         if (itemsLength <= 0) return []
