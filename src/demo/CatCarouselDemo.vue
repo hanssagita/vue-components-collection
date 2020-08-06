@@ -4,7 +4,7 @@
         <cat-carousel
                 :items="products"
                 :item-per-page="itemPerPage"
-                :indicators-config="{activeColor: '#000', size: 10, color: '#d1d1d1', hideIndicators: false}"
+                :indicators-config="{activeColor: '#000', size: 10, color: '#d1d1d1', hideIndicators: false, maxIndicator: 2}"
         >
             <template
                     slot="item"
