@@ -220,18 +220,17 @@
         this.reversedSlides = this.slides.slice().reverse()
       },
       validateIndicator(index) {
-        console.log('kucing', index, this.track)
         if (index === this.track) {
-          return 'active'
+          return 'active-indicator'
         }
         if (index >= this.trackStart && index <= this.trackEnd) {
-          return 'std'
+          return 'std-indicator'
         }
         if (index === this.trackStart - 1 || index === this.trackEnd + 1) {
-          return 'small'
+          return 'small-indicator'
         }
         if (index === this.trackStart - 2 || index === this.trackEnd + 2) {
-          return 'micro'
+          return 'micro-indicator'
         }
         return false
       },
@@ -367,13 +366,13 @@
           margin-right: 20px;
         }
       }
-      .active {
+      .active-indicator {
         width: 12px;
         height: 12px;
         margin: 1px;
         background-color: #0095da;
       }
-      .small {
+      .small-indicator {
         width: 6px;
         height: 6px;
         margin: 3px;
@@ -384,7 +383,7 @@
           margin-right: 10px;
         }
       }
-      .micro {
+      .micro-indicator {
         width: 3px;
         height: 3px;
         margin: 4px;
