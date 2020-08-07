@@ -59,10 +59,9 @@
     >
       <div
         v-for="index in maxSlide"
-        v-show="validateIndicator(index)"
+        v-show="validateIndicator(index - 1)"
         :key="index"
-        :class="['cat-carousel__indicators__item']"
-        :style="[indicatorsItemSizeStyle, selectedIndicator(index) && activeIndicatorStyle]"
+        :class="['cat-carousel__indicators__item', validateIndicator(index - 1)]"
       />
     </div>
   </div>
@@ -76,11 +75,8 @@
     paddingCenter: 10
   }
   const INDICATORS_DEFAULT_CONFIG = {
-    size: 16,
-    color: '#d6d6d6',
-    activeColor: '#0095da',
     hideIndicators: false,
-    maxIndicator: 5
+    maxIndicator: 2
   }
 
   export default {
@@ -137,12 +133,21 @@
         this.initSlides()
       },
       track(val) {
-        if (val === this.trackStart - 1) {
-          this.trackStart--
-          this.trackEnd++
-        } else if (val === this.items.length - this.trackEnd) {
-          this.trackStart++
-          this.trackEnd--
+        if (val) {
+          if (val < this.trackStart) {
+            this.trackStart = val
+            this.trackEnd = this.trackStart + this.maxIndicator
+            if (this.trackEnd > this.slides.length) {
+              this.trackEnd = this.slides.length
+            }
+          }
+          if (val > this.trackEnd) {
+            this.trackEnd = val
+            this.trackStart = this.trackEnd - this.maxIndicator
+            if (this.trackStart < 0) {
+              this.trackStart = 0
+            }
+          }
         }
       }
     },
@@ -184,19 +189,6 @@
           width: `${width}%`
         }
       },
-      indicatorsItemSizeStyle () {
-        const size = this.indicatorsConfig.size || INDICATORS_DEFAULT_CONFIG.size
-        return {
-          width: `${size}px`,
-          height: `${size}px`,
-          backgroundColor: this.indicatorsConfig.color || INDICATORS_DEFAULT_CONFIG.color
-        }
-      },
-      activeIndicatorStyle () {
-        return {
-          backgroundColor: this.indicatorsConfig.activeColor || INDICATORS_DEFAULT_CONFIG.activeColor
-        }
-      },
       hideIndicators () {
         return this.indicatorsConfig.hideIndicators || INDICATORS_DEFAULT_CONFIG.hideIndicators
       },
@@ -206,14 +198,23 @@
     },
     methods: {
       initSlides () {
-        this.trackEnd = this.items.length - this.maxIndicator
+        this.trackEnd = this.maxIndicator
         this.slides = this.addSlides(this.items.length)
         this.initialSlides = this.slides
         this.reversedSlides = this.slides.slice().reverse()
       },
       validateIndicator(index) {
-        if (index >= this.trackStart && index <= this.items.length - this.trackEnd + 1) {
-          return true
+        if (index === this.track) {
+          return 'active-indicator'
+        }
+        if (index >= this.trackStart && index <= this.trackEnd) {
+          return 'std-indicator'
+        }
+        if (index === this.trackStart - 1 || index === this.trackEnd + 1) {
+          return 'small-indicator'
+        }
+        if (index === this.trackStart - 2 || index === this.trackEnd + 2) {
+          return 'micro-indicator'
         }
         return false
       },
@@ -332,10 +333,44 @@
     &__indicators {
       display: flex;
       justify-content: center;
-      margin: 8px;
+      align-items: center;
       &__item {
+        width: 7.5px;
+        height: 7.5px;
+        margin: 2px;
         border-radius: 50%;
-        margin: 0 4px;
+        background-color: rgba(214, 214, 214, 0.5);
+        overflow: hidden;
+        transition: all 500ms ease-out;
+        text-indent: -9999px;
+        &:first-child {
+          margin-left: 20px;
+        }
+        &:last-child {
+          margin-right: 20px;
+        }
+      }
+      .active-indicator {
+        width: 12px;
+        height: 12px;
+        margin: 1px;
+        background-color: #0095da;
+      }
+      .small-indicator {
+        width: 6px;
+        height: 6px;
+        margin: 3px;
+        &:first-child {
+          margin-left: 10px;
+        }
+        &:last-child {
+          margin-right: 10px;
+        }
+      }
+      .micro-indicator {
+        width: 3px;
+        height: 3px;
+        margin: 4px;
       }
     }
   }
