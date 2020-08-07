@@ -75,11 +75,8 @@
     paddingCenter: 10
   }
   const INDICATORS_DEFAULT_CONFIG = {
-    size: 16,
-    color: '#d6d6d6',
-    activeColor: '#0095da',
     hideIndicators: false,
-    maxIndicator: 5
+    maxIndicator: 2
   }
 
   export default {
@@ -190,19 +187,6 @@
         return {
           flex: `0 0 ${width}%`,
           width: `${width}%`
-        }
-      },
-      indicatorsItemSizeStyle () {
-        const size = this.indicatorsConfig.size || INDICATORS_DEFAULT_CONFIG.size
-        return {
-          width: `${size}px`,
-          height: `${size}px`,
-          backgroundColor: this.indicatorsConfig.color || INDICATORS_DEFAULT_CONFIG.color
-        }
-      },
-      activeIndicatorStyle () {
-        return {
-          backgroundColor: this.indicatorsConfig.activeColor || INDICATORS_DEFAULT_CONFIG.activeColor
         }
       },
       hideIndicators () {
