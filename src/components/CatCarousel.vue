@@ -138,17 +138,17 @@
       track(val) {
         if (val) {
           if (val < this.trackStart) {
-            this.trackStart = val;
-            this.trackEnd = this.trackStart + this.maxIndicator;
-            if (this.trackEnd > this.slides) {
-              this.trackEnd = this.slides;
+            this.trackStart = val
+            this.trackEnd = this.trackStart + this.maxIndicator
+            if (this.trackEnd > this.slides.length) {
+              this.trackEnd = this.slides.length
             }
           }
           if (val > this.trackEnd) {
-            this.trackEnd = val;
-            this.trackStart = this.trackEnd - this.maxIndicator;
+            this.trackEnd = val
+            this.trackStart = this.trackEnd - this.maxIndicator
             if (this.trackStart < 0) {
-              this.trackStart = 0;
+              this.trackStart = 0
             }
           }
         }
