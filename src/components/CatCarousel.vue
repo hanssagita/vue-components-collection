@@ -140,8 +140,8 @@
           if (val < this.trackStart) {
             this.trackStart = val;
             this.trackEnd = this.trackStart + this.maxIndicator;
-            if (this.trackEnd > this.carouselItem.length) {
-              this.trackEnd = this.carouselItem.length;
+            if (this.trackEnd > this.slides) {
+              this.trackEnd = this.slides;
             }
           }
           if (val > this.trackEnd) {
