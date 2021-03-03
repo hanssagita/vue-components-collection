@@ -116,10 +116,6 @@
       disabledNextSwipe: {
         type: Boolean,
         default: false
-      },
-      initialSlideIndex: {
-        type: Number,
-        default: 0
       }
     },
     data () {
@@ -147,7 +143,6 @@
         this.$emit('init', {
           goToSlide: this.goToSlide,
         })
-        this.goToSlide(this.initialSlideIndex)
       })
     },
     watch: {
