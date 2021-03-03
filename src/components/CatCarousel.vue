@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="cat-carousel-wrapper">
     <div class="cat-carousel-container">
       <div
         :class="['cat-carousel__navigation', {'cat-carousel__navigation--end': onFirstPage}]"
@@ -54,6 +54,7 @@
       </div>
     </div>
     <div
+      :style="indicatorPositionStyles"
       :class="{'hide': hideIndicators}"
       class="cat-carousel__indicators"
     >
@@ -76,7 +77,12 @@
   }
   const INDICATORS_DEFAULT_CONFIG = {
     hideIndicators: false,
-    maxIndicator: 2
+    maxIndicator: 2,
+    // position from bottom of carousel
+    position: {
+      left: '20px',
+      bottom: '7%'
+    }
   }
 
   export default {
@@ -110,6 +116,10 @@
       disabledNextSwipe: {
         type: Boolean,
         default: false
+      },
+      initialSlideIndex: {
+        type: Number,
+        default: 0
       }
     },
     data () {
@@ -137,6 +147,7 @@
         this.$emit('init', {
           goToSlide: this.goToSlide,
         })
+        this.goToSlide(this.initialSlideIndex)
       })
     },
     watch: {
@@ -214,6 +225,12 @@
       },
       maxIndicator () {
         return this.indicatorsConfig.maxIndicator - 1 || INDICATORS_DEFAULT_CONFIG.maxIndicator - 1
+      },
+      indicatorPositionStyles () {
+        return {
+          position: 'absolute',
+          ...(this.indicatorsConfig.position || INDICATORS_DEFAULT_CONFIG.position)
+        }
       }
     },
     methods: {
@@ -315,6 +332,10 @@
     width: 100%;
     height: 100%;
     margin: 0 auto;
+  }
+  .cat-carousel-wrapper {
+    display: flex;
+    position: relative;
   }
   .cat-carousel {
     &__content {
