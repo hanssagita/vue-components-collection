@@ -102,6 +102,14 @@
         default: () => {
           return CENTER_MODE_DEFAULT_CONFIG
         }
+      },
+      disabledPrevSwipe: {
+        type: Boolean,
+        default: false
+      },
+      disabledNextSwipe: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -149,6 +157,7 @@
             }
           }
         }
+        this.$emit('slideChange', val)
       }
     },
     computed: {
@@ -231,6 +240,7 @@
         this.wrapper = Object.assign({}, this.wrapper,{
           translateX: this.wrapper.translateX + this.slides[this.track] * this.itemWidth
         })
+        this.$emit('slideChange', this.track)
         if (this.onFirstPage) this.slides = this.initialSlides
       },
       next () {
@@ -239,6 +249,7 @@
         this.wrapper = Object.assign({}, this.wrapper, {
           translateX: this.wrapper.translateX - this.slides[this.track] * this.itemWidth
         })
+        this.$emit('slideChange', this.track)
         if (this.onLastPage) this.slides = this.reversedSlides
       },
       selectedIndicator (index) {
@@ -251,11 +262,11 @@
         if (!this.touchX) return
         let currentX = event.touches[0].clientX
         let diffX = currentX - this.touchX
-        if (diffX > SWIPE_THRESHOLD) {
+        if (diffX > SWIPE_THRESHOLD && !this.disabledPrevSwipe) {
           this.prev()
           this.touchX = null
         }
-        if (diffX < -SWIPE_THRESHOLD) {
+        if (diffX < -SWIPE_THRESHOLD && !this.disabledNextSwipe) {
           this.next()
           this.touchX = null
         }
