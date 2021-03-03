@@ -118,9 +118,11 @@
           translateX: 0
         },
         maxSlide: 0,
+        // track === index of active slide
         track: 0,
         trackEnd: 0,
         trackStart: 0,
+        // slides is an array containing number of item(s) in each slide
         slides: [],
         normalSlideWindow: [],
         reversedSlideWindow: [],
@@ -130,6 +132,12 @@
     mounted () {
       this.maxSlide = Math.ceil(this.items.length / this.itemPerPage)
       this.initSlides()
+      // provide goToSlide method to parent
+      this.$nextTick(() => {
+        this.$emit('init', {
+          goToSlide: this.goToSlide,
+        })
+      })
     },
     watch: {
       items () {
@@ -140,7 +148,7 @@
         this.maxSlide = Math.ceil(this.items.length / this.itemPerPage)
         this.initSlides()
       },
-      track(val) {
+      track (val, prevVal) {
         if (val) {
           if (val < this.trackStart) {
             this.trackStart = val
@@ -157,7 +165,10 @@
             }
           }
         }
-        this.$emit('slideChange', val)
+        this.$emit('slideChange', {
+          index: val,
+          previousIndex: prevVal
+        })
       }
     },
     computed: {
@@ -240,7 +251,6 @@
         this.wrapper = Object.assign({}, this.wrapper,{
           translateX: this.wrapper.translateX + this.slides[this.track] * this.itemWidth
         })
-        this.$emit('slideChange', this.track)
         if (this.onFirstPage) this.slides = this.initialSlides
       },
       next () {
@@ -249,7 +259,6 @@
         this.wrapper = Object.assign({}, this.wrapper, {
           translateX: this.wrapper.translateX - this.slides[this.track] * this.itemWidth
         })
-        this.$emit('slideChange', this.track)
         if (this.onLastPage) this.slides = this.reversedSlides
       },
       selectedIndicator (index) {
@@ -269,6 +278,29 @@
         if (diffX < -SWIPE_THRESHOLD && !this.disabledNextSwipe) {
           this.next()
           this.touchX = null
+        }
+      },
+      goToSlide (targetIndex) {
+        const translateX = this.calculateTranslateX(this.wrapper.translateX, this.track, targetIndex)
+        this.wrapper = Object.assign({}, this.wrapper, { translateX })
+        this.track = targetIndex
+        this.revalidateSlides()
+      },
+      calculateTranslateX (value, index, targetIndex) {
+        if (index === targetIndex) return value
+        const slideToRight = targetIndex > index
+        const nextTrack = slideToRight ? index + 1 : index - 1
+        const translateDirection = slideToRight ? -1 : 1 
+        const result = value + translateDirection * this.slides[nextTrack] * this.itemWidth
+        return this.calculateTranslateX(result, nextTrack, targetIndex)
+      },
+      revalidateSlides () {
+        if (this.onFirstPage) {
+          this.slides = this.initialSlides
+        } else if (this.onLastPage) {
+          this.slides = this.reversedSlides
+        } else {
+          return
         }
       }
     }
