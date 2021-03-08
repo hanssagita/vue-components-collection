@@ -15,6 +15,7 @@
       <div
         ref="carouselContent"
         class="cat-carousel__content"
+        :style="carouselContentStyles"
       >
         <div
           ref="carouselWrapper"
@@ -116,6 +117,14 @@
       disabledNextSwipe: {
         type: Boolean,
         default: false
+      },
+      initialSlideIndex: {
+        type: Number,
+        default: 0
+      },
+      width: {
+        type: Number,
+        default: 0
       }
     },
     data () {
@@ -130,19 +139,20 @@
         trackStart: 0,
         // slides is an array containing number of item(s) in each slide
         slides: [],
-        normalSlideWindow: [],
-        reversedSlideWindow: [],
-        touchX: null
+        touchX: null,
       }
     },
-    mounted () {
+    created () {
       this.maxSlide = Math.ceil(this.items.length / this.itemPerPage)
       this.initSlides()
+      this.setInitialSlide()
+    },
+    mounted () {
       // provide goToSlide method to parent
       this.$nextTick(() => {
         this.$emit('init', {
           goToSlide: this.goToSlide,
-        })
+        })        
       })
     },
     watch: {
@@ -188,7 +198,13 @@
         return this.$refs.carouselWrapper
       },
       itemWidth () {
+        if (this.width) {
+          return this.absoluteItemWidth
+        }
         return this.carouselItem && this.carouselItem.length > 0 && this.carouselItem[0].clientWidth
+      },
+      absoluteItemWidth () {
+        return this.width / this.itemPerPage
       },
       wrapperStyles () {
         if (this.centerMode.enabled) {
@@ -204,16 +220,22 @@
         return this.track === this.maxSlide - 1
       },
       carouselItemStyles () {
-        let width = WIDTH_PAGE / this.itemPerPage
+        if (this.width) {
+          return {
+            flex: `0 0 ${this.absoluteItemWidth}px`
+          }
+        }
+
+        let percentageWidth = WIDTH_PAGE / this.itemPerPage
 
         if (this.centerMode.enabled) {
-          width = width * (1 - this.centerMode.paddingCenter / 100 * 2)
+          percentageWidth = percentageWidth * (1 - this.centerMode.paddingCenter / 100 * 2)
         }
 
         return {
-          flex: `0 0 ${width}%`,
-          width: `${width}%`
+          flex: `0 0 ${percentageWidth}%`
         }
+      
       },
       hideIndicators () {
         return this.indicatorsConfig.hideIndicators || INDICATORS_DEFAULT_CONFIG.hideIndicators
@@ -226,6 +248,9 @@
           position: 'absolute',
           ...(this.indicatorsConfig.position || INDICATORS_DEFAULT_CONFIG.position)
         }
+      },
+      carouselContentStyles () {
+        return this.width ? { width: this.width } : {}
       }
     },
     methods: {
@@ -313,6 +338,12 @@
           this.slides = this.reversedSlides
         } else {
           return
+        }
+      },
+      setInitialSlide () {
+        // initial slide can only be set if width is defined explicitly
+        if (this.width && this.initialSlideIndex) {
+          this.goToSlide(this.initialSlideIndex)
         }
       }
     }
